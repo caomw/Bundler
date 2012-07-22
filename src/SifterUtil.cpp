@@ -305,7 +305,8 @@ bool FileExists(const char *filename)
 
     return true;
 }
-     
+/*     
+//Removing this function as it is already define in 5point lib
 void choose(int n, int k, int *arr)
 {
     int i;
@@ -334,7 +335,7 @@ void choose(int n, int k, int *arr)
         }
     }
 }
-
+*/
 static double RGBtoLMS[9] = { 0.3811, 0.5783, 0.0402, 
                               0.1967, 0.7244, 0.0782, 
                               0.0241, 0.1288, 0.8444 };

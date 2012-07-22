@@ -30,13 +30,13 @@ static double ident[3][3] = { { 1.0, 0.0, 0.0 },
 
 /* Return a new zero transform */
 trans2D_t *new_zero_transform() {
-    trans2D_t *T = calloc(sizeof(trans2D_t), 1);
+    trans2D_t *T = (trans2D_t*)calloc(sizeof(trans2D_t), 1);
     return T;
 }
 
 /* Return a new identity transform */
 trans2D_t *new_identity_transform() {
-    trans2D_t *T = malloc(sizeof(trans2D_t));
+    trans2D_t *T = (trans2D_t*)malloc(sizeof(trans2D_t));
     memcpy(T->T, ident, 9 * sizeof(double));
     return T;
 }
@@ -46,7 +46,7 @@ trans2D_t *new_transform(double t00, double t01, double t02,
                          double t10, double t11, double t12,
                          double t20, double t21, double t22)
 {
-    trans2D_t *T = malloc(sizeof(trans2D_t));
+    trans2D_t *T = (trans2D_t*)malloc(sizeof(trans2D_t));
 
     T->T[0][0] = t00; T->T[0][1] = t01; T->T[0][2] = t02;
     T->T[1][0] = t10; T->T[1][1] = t11; T->T[1][2] = t12;

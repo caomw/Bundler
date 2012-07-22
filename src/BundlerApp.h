@@ -26,6 +26,16 @@
 
 typedef std::pair<int,int> ImagePair;
 
+enum BundleAdjustmentType
+{
+	BA_NONE,
+	BA_SBA,
+	BA_PBA_CPU_DOUBLE,
+	BA_PBA_CPU_FLOAT,	
+	BA_PBA_GPU_FLOAT,
+	BA_CERES
+};
+
 class BundlerApp : public BaseApp
 {
 public:
@@ -467,6 +477,8 @@ public:
 
     /* **** Bundler Options **** */
 
+    BundleAdjustmentType m_ba_type; //bundle adjustment type (none, sba, pba(cpu/gpu), ceres
+	bool m_parallel_epipolar;    //compute epipolar geometry in parallel
     bool m_panorama_mode;        /* Are we reconstructing a panorama? */
     bool m_add_images_fast;
     bool m_estimate_ignored;

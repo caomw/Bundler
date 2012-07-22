@@ -762,8 +762,8 @@ int find_projection_3x4(int num_pts, v3_t *points, v2_t *projs, double *P) {
 	int num_eqns = 2 * num_pts;
 	int num_vars = 11;
 
-	double *A = malloc(sizeof(double) * num_eqns * num_vars);
-	double *b = malloc(sizeof(double) * num_eqns);
+	double *A = (double*)malloc(sizeof(double) * num_eqns * num_vars);
+	double *b = (double*)malloc(sizeof(double) * num_eqns);
 	double X[11];
 
 	double error = 0.0;

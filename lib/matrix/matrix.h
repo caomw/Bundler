@@ -138,7 +138,7 @@ void matrix_polar_decomposition(int n, double *A, double *Q, double *S);
 /* Driver for the minpack function lmdif, which uses
  * Levenberg-Marquardt for non-linear least squares minimization */
 void lmdif_driver(void *fcn, int m, int n, double *xvec, double tol);
-void lmdif_driver2(void *fcn, int m, int n, double *xvec, double tol);
+void lmdif_driver2(void *fcn, int m, int n, double *xvec, double tol, void* userData);
 void lmdif_driver3(void *fcn, int m, int n, double *xvec, double tol,
                    int maxfev, double *H);
     

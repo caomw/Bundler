@@ -45,9 +45,9 @@ void compute_nullspace_basis(int n, v2_t *a, v2_t *b, double *basis) {
 
     max_dim = MAX(9, n);
 
-    Q = malloc(sizeof(double) * max_dim * max_dim);
-    S = malloc(sizeof(double) * max_dim);
-    U = malloc(sizeof(double) * max_dim * max_dim);
+    Q = (double*)malloc(sizeof(double) * max_dim * max_dim);
+    S = (double*)malloc(sizeof(double) * max_dim);
+    U = (double*)malloc(sizeof(double) * max_dim * max_dim);
     
 
     /* Create the 5x9 epipolar constraint matrix */
@@ -628,8 +628,8 @@ int compute_pose_ransac(int n, v2_t *r_pts, v2_t *l_pts,
     double E_best[9];
     v2_t r_best, l_best;
 
-    r_pts_norm = malloc(sizeof(v2_t) * n);
-    l_pts_norm = malloc(sizeof(v2_t) * n);
+    r_pts_norm = (v2_t*)malloc(sizeof(v2_t) * n);
+    l_pts_norm = (v2_t*)malloc(sizeof(v2_t) * n);
 
     matrix_invert(3, K1, K1_inv);
     matrix_invert(3, K2, K2_inv);

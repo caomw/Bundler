@@ -5,12 +5,14 @@
 
 #include <math.h>
 #include "minpack.h"
+#include "fmatrix.h"
+
 #define max(a,b) ((a) >= (b) ? (a) : (b))
 
 /* Subroutine */ void fdjac2_(void (*fcn)(const int *m, const int *n, const double *x, double *fvec,
 			 int *iflag ), const int *m, const int *n, double *x, 
 	const double *fvec, double *fjac, const int *ldfjac, int *iflag, 
-	const double *epsfcn, double *wa)
+	const double *epsfcn, double *wa, void* userData)
 {
     /* Table of constant values */
 
@@ -123,7 +125,15 @@
 	    h__ = eps;
 	}
 	x[j] = temp + h__;
+	
+	if (userData)
+	{
+		fmatrix_residuals2* fres = (fmatrix_residuals2*)userData;
+		(*fres)(m, n, &x[1], &wa[1], iflag);
+	}
+	else
 	(*fcn)(m, n, &x[1], &wa[1], iflag);
+
 	if (*iflag < 0) {
 	    /* goto L30; */
             return;

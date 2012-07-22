@@ -17,10 +17,6 @@
 #ifndef __resample_h__
 #define __resample_h__
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "bmp.h"
 #include "color.h"
 #include "image.h"
@@ -60,9 +56,5 @@ int img_disconnected_under_homography(img_t *img, double *H);
 void img_sample_random_pt(img_t *img, trans2D_t *Tinv, img_t *img_old, 
 			  int nhood_radius, 
 			  int *xout, int *yout, double grad_threshold);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* __resample_h__ */

@@ -73,8 +73,8 @@ void align_homography(int num_pts, v3_t *r_pts, v3_t *l_pts,
     int nrhs = 1;
     int i, base;
 
-    double *A = malloc(sizeof(double) * m * n);    /* Left-hand matrix */
-    double *B = malloc(sizeof(double) * m * nrhs); /* Right-hand matrix */
+    double *A = (double*)malloc(sizeof(double) * m * n);    /* Left-hand matrix */
+    double *B = (double*)malloc(sizeof(double) * m * nrhs); /* Right-hand matrix */
 
     double Ttmp[9];
     double T1[9], T2[9];

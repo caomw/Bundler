@@ -100,7 +100,7 @@ int read_palette(FILE *f, u_int16_t bpp, palette_t *p) {
     int i, num_colors;
 
     p->num_colors = num_colors = (1 << bpp);
-    p->colors = malloc(sizeof(color_t) * num_colors);
+    p->colors = (color_t*)malloc(sizeof(color_t) * num_colors);
 
     for (i = 0; i < num_colors; i++) {
         read_byte(&p->colors[i].b, f);
@@ -131,7 +131,7 @@ bmp_t *read_bmp(FILE *f) {
     bmp_t *b = NULL;
     int i, num_pixels, w, h, x, y;
 
-    b = malloc(sizeof(bmp_t));
+    b = (bmp_t*)malloc(sizeof(bmp_t));
 
     /* Read the file header */
     if (read_bmp_file_header(f, &b->file_header) != 0) {
@@ -146,7 +146,7 @@ bmp_t *read_bmp(FILE *f) {
     }
 
     num_pixels = b->info_header.width * b->info_header.height;
-    b->pixels = malloc(sizeof(color_t) * num_pixels);
+    b->pixels = (color_t*)malloc(sizeof(color_t) * num_pixels);
     w = b->info_header.width;
     h = b->info_header.height;
 
@@ -255,7 +255,7 @@ bmp_t *read_bmp(FILE *f) {
 		printf("32-bit bmp, skipping %d bytes\n", 
 		       (start_of_data - curr_offset));
 
-		ignore = malloc(start_of_data - curr_offset);
+		ignore = (char*)malloc(start_of_data - curr_offset);
 
 		/* Skip 68 bytes */
 		fread(ignore, 1, start_of_data - curr_offset, f);
@@ -452,7 +452,7 @@ int bmp_get_height(bmp_t *bmp) {
 }
 
 bmp_t *sub_bitmap(bmp_t *bmp, int x, int y, int w, int h) {
-    bmp_t *sb = malloc(sizeof(bmp_t));
+    bmp_t *sb = (bmp_t*)malloc(sizeof(bmp_t));
     int bw = BMP_WIDTH(bmp), bh = BMP_HEIGHT(bmp);
     int data_bytes;
     int yi;
@@ -491,12 +491,12 @@ bmp_t *sub_bitmap(bmp_t *bmp, int x, int y, int w, int h) {
 
     /* Copy the palette */
     sb->palette.num_colors = bmp->palette.num_colors;
-    sb->palette.colors = malloc(sizeof(color_t) * sb->palette.num_colors);
+    sb->palette.colors = (color_t*)malloc(sizeof(color_t) * sb->palette.num_colors);
     memcpy(sb->palette.colors, bmp->palette.colors, 
            sizeof(color_t) * sb->palette.num_colors);
 
     /* Fill in the pixel data */
-    sb->pixels = malloc(sizeof(color_t) * w * h);
+    sb->pixels = (color_t*)malloc(sizeof(color_t) * w * h);
 
     for (yi = y; yi < y + h; yi++)
         memcpy(sb->pixels + (yi - y) * w, bmp->pixels + yi * bw + x, 
@@ -508,7 +508,7 @@ bmp_t *sub_bitmap(bmp_t *bmp, int x, int y, int w, int h) {
 /* Paste two bitmaps together horizontally */
 bmp_t *merge_bmps(bmp_t *b1, bmp_t *b2) {
     /* Make a 24-bit bitmap for simplicity */
-    bmp_t *bmerge = malloc(sizeof(bmp_t));
+    bmp_t *bmerge = (bmp_t*)malloc(sizeof(bmp_t));
     int w1 = BMP_WIDTH(b1), w2 = BMP_WIDTH(b2);
     int h1 = BMP_HEIGHT(b1), h2 = BMP_HEIGHT(b2);
     int w = w1 + w2, h = MAX(h1, h2);
@@ -539,7 +539,7 @@ bmp_t *merge_bmps(bmp_t *b1, bmp_t *b2) {
     bmerge->palette.colors = NULL;
     
     /* Fill in the pixel data */
-    bmerge->pixels = malloc(sizeof(color_t) * w * h);
+    bmerge->pixels = (color_t*)malloc(sizeof(color_t) * w * h);
     for (y = 0; y < h; y++) {
         if (y >= h1)
             memset(bmerge->pixels + y * w, 0xff, sizeof(color_t) * w1);

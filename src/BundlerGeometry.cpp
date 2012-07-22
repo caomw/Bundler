@@ -35,7 +35,8 @@
 #include "matrix.h"
 #include "qsort.h"
 #include "util.h"
-
+#include "omp.h"
+#include <sstream>
 
 
 double global_scale = 1.0;
@@ -405,8 +406,7 @@ bool BundlerApp::ComputeEpipolarGeometry(int idx1, int idx2,
     
     int num_inliers = (int) inliers.size();
 
-    printf("Inliers[%d,%d] = %d out of %d\n", idx1, idx2, num_inliers, 
-	   (int) list.size());
+    printf("Inliers[%d,%d] = %d out of %d\n", idx1, idx2, num_inliers, (int) list.size());
 
     if (removeBadMatches) {
 	/* Refine the matches */
@@ -440,6 +440,21 @@ bool BundlerApp::ComputeEpipolarGeometry(int idx1, int idx2,
     }
 }
 
+
+struct EpipolarGeometryResult
+{
+	EpipolarGeometryResult(int i, int j)
+	{
+		indexA = i;
+		indexB = j;
+		success = false;
+	}
+
+	int indexA;
+	int indexB;
+	bool success;
+};
+
 /* Compute epipolar geometry between all matching images */
 void BundlerApp::ComputeEpipolarGeometry(bool removeBadMatches, 
                                          int new_image_start) 
@@ -453,6 +468,59 @@ void BundlerApp::ComputeEpipolarGeometry(bool removeBadMatches,
 
     std::vector<MatchIndex> remove;
 
+	std::vector<EpipolarGeometryResult> results;
+
+	for (unsigned int i = 0; i < num_images; i++) 
+	{
+        MatchAdjList::iterator iter;
+
+		for (iter = m_matches.Begin(i); iter != m_matches.End(i); iter++) 
+		{
+            unsigned int j = iter->m_index;
+			results.push_back(EpipolarGeometryResult(i, j));
+		}
+	}
+	
+	//computation of epipolar geometry in parallel
+	time_t start = clock();
+	
+	if (m_parallel_epipolar)
+	{
+		#pragma omp parallel for
+		for (int i=0; i<results.size(); ++i)
+			results[i].success = ComputeEpipolarGeometry(results[i].indexA, results[i].indexB, removeBadMatches);
+	}
+	else
+	{
+		for (int i=0; i<results.size(); ++i)
+			results[i].success = ComputeEpipolarGeometry(results[i].indexA, results[i].indexB, removeBadMatches);		
+	}
+
+	unsigned int nbSuccessComputations = 0;
+	for (unsigned int i=0; i<results.size(); ++i)
+	{
+		MatchIndex idx     = GetMatchIndex(results[i].indexA, results[i].indexB);
+		MatchIndex idx_rev = GetMatchIndex(results[i].indexB, results[i].indexA);
+
+		if (!results[i].success)
+		{
+			if (removeBadMatches)
+			{
+				remove.push_back(idx);
+				remove.push_back(idx_rev);
+
+				m_transforms.erase(idx);
+				m_transforms.erase(idx_rev);
+			 }
+		}
+		else 
+		{
+			nbSuccessComputations++;
+			matrix_transpose(3, 3, m_transforms[idx].m_fmatrix, m_transforms[idx_rev].m_fmatrix);
+		}
+	}
+	std::cout << nbSuccessComputations << "/" << results.size() << " successful epipolar geometry computed in " << (clock()-start) << "ms" << std::endl;
+	/*
     for (unsigned int i = 0; i < num_images; i++) {
         MatchAdjList::iterator iter;
 
@@ -469,6 +537,7 @@ void BundlerApp::ComputeEpipolarGeometry(bool removeBadMatches,
 
             bool connect12 = 
                 ComputeEpipolarGeometry(i, j, removeBadMatches);
+
 
             if (!connect12) {
                 if (removeBadMatches) {
@@ -490,7 +559,7 @@ void BundlerApp::ComputeEpipolarGeometry(bool removeBadMatches,
             }
         }
     }
-
+	*/
     int num_removed = (int) remove.size();
     
     for (int i = 0; i < num_removed; i++) {

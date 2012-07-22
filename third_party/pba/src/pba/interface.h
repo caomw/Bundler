@@ -41,7 +41,7 @@ bool run_sfm_pba(int num_pts, int num_cameras, int ncons,
         int use_constraints,   int use_point_constraints,
         v3_t *pt_constraints,  Float pt_constraint_weight,  int fix_points,
         int optimize_for_fisheye, Float eps2,  Float *Vout, Float *Sout,
-        Float *Uout, Float *Wout, int max_iteration = 150)
+        Float *Uout, Float *Wout, int max_iteration = 150, ParallelBA::DeviceT device = ParallelBA::PBA_CUDA_DEVICE_DEFAULT)
 {
     ///////////////////////////////////////////////
     if(vmask == NULL || projections == NULL)  return false;
@@ -81,7 +81,7 @@ bool run_sfm_pba(int num_pts, int num_cameras, int ncons,
 
     std::cout << "[PBA] ncam = " << num_cameras << "; npt = " << num_pts << "; nproj = " << ptidx.size() << '\n';
 
-    static ParallelBA gpba;
+    static ParallelBA gpba(device);
     gpba.GetInternalConfig()->__lm_max_iteration = max_iteration;
     gpba.GetInternalConfig()->__lm_damping_auto_switch = 2.0f;
     gpba.EnableRadialDistortion(undistort? ParallelBA::PBA_PROJECTION_DISTORTION: ParallelBA::PBA_NO_DISTORTION);

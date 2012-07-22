@@ -34,17 +34,17 @@ ADD_EXECUTABLE(Bundle2Vis Bundle2Vis.cpp)
 ADD_EXECUTABLE(Bundle2PMVS Bundle2PMVS.cpp LoadJPEG.cpp)
 TARGET_LINK_LIBRARIES(Bundle2PMVS imagelib matrix ${JPEG_LIBRARY} zlib ${MATH_LIBS})
 
-SET(BUNDLER_SOURCES BaseApp.cpp BundlerApp.cpp keys.cpp Register.cpp Epipolar.cpp	
-	Bundle.cpp BundleFast.cpp MatchTracks.cpp Camera.cpp Geometry.cpp
-	ImageData.cpp SifterUtil.cpp BaseGeometry.cpp BundlerGeometry.cpp
-	BoundingBox.cpp BundleAdd.cpp ComputeTracks.cpp BruteForceSearch.cpp
-	BundleIO.cpp ProcessBundle.cpp BundleTwo.cpp Decompose.cpp
-	RelativePose.cpp Distortion.cpp TwoFrameModel.cpp LoadJPEG.cpp)
+SET(BUNDLER_SOURCES BaseApp.cpp BaseApp.h BundlerApp.cpp BundlerApp.h keys.cpp keys.h Register.cpp Register.h Epipolar.cpp Epipolar.h	
+	Bundle.cpp Bundle.h BundleFast.cpp MatchTracks.cpp Camera.cpp Camera.h Geometry.cpp Geometry.h
+	ImageData.cpp ImageData.h SifterUtil.cpp SifterUtil.h BaseGeometry.cpp BundlerGeometry.cpp
+	BoundingBox.cpp BoundingBox.h BundleAdd.cpp BundleAdd.h ComputeTracks.cpp BruteForceSearch.cpp BruteForceSearch.h
+	BundleIO.cpp ProcessBundle.cpp BundleTwo.cpp Decompose.cpp Decompose.h
+	RelativePose.cpp Distortion.cpp Distortion.h TwoFrameModel.cpp TwoFrameModel.h LoadJPEG.cpp LoadJPEG.h)
 SET_SOURCE_FILES_PROPERTIES(${BUNDLER_SOURCES}
   PROPERTIES
   COMPILE_FLAGS "-D__NO_UI__ -D__BUNDLER__ -D__BUNDLER_DISTR__ -D_CRT_SECURE_NO_WARNINGS")
 ADD_EXECUTABLE(Bundler ${BUNDLER_SOURCES})
 TARGET_LINK_LIBRARIES(Bundler imagelib sfm-driver sba-1.5 matrix zlib
- 5point ${JPEG_LIBRARY} ann_1.1_char getopt ${MATH_LIBS} pbaCPU)
+ 5point ${JPEG_LIBRARY} ann_1.1_char getopt ${MATH_LIBS} pbaGPU)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)

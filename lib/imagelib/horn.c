@@ -483,8 +483,8 @@ double align_horn_3D_2(int n, v3_t *right_pts, v3_t *left_pts, int scale_xform,
 
     double sum_num, sum_den, scale, RMS_sum;
 
-    v3_t *left_pts_zm  = malloc(sizeof(v3_t) * n);
-    v3_t *right_pts_zm = malloc(sizeof(v3_t) * n);
+    v3_t *left_pts_zm  = (v3_t*)malloc(sizeof(v3_t) * n);
+    v3_t *right_pts_zm = (v3_t*)malloc(sizeof(v3_t) * n);
 
     double error = 0.0;
 

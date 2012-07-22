@@ -38,6 +38,7 @@
 #include "fit.h"
 #include "matrix.h"
 #include "pgm.h"
+#include "bmp.h"
 #include "resample.h"
 #include "transform.h"
 #include "util.h"
@@ -955,8 +956,9 @@ void ImageData::CacheDimensions()
 
         if (strcmp(m_name + len - 3, "pgm") == 0)
             img_read_pgm_dimensions(m_name, &w, &h);
-        else if (strcmp(m_name + len - 3, "bmp") == 0)
-	    bmp_file_get_dimensions(m_name, &w, &h);
+		//Disabling bmp support because of a linking error
+        //else if (strcmp(m_name + len - 3, "bmp") == 0)
+		//	bmp_file_get_dimensions(m_name, &w, &h);
         else if (strcmp(m_name + len - 3, "jpg") == 0)
             GetJPEGDimensions(m_name, w, h);
     } else {
@@ -968,8 +970,8 @@ void ImageData::CacheDimensions()
 	bmp_file[strlen(m_name) - 2] = 'm';
 	bmp_file[strlen(m_name) - 1] = 'p';
 
-	if (FileExists(bmp_file)) {
-	    bmp_file_get_dimensions(bmp_file, &w, &h);
+	if (false) {//FileExists(bmp_file)) {
+	   ;// bmp_file_get_dimensions(bmp_file, &w, &h);
 	} else {
 	    char jpeg_file[256];
 	    strcpy(jpeg_file, m_name);

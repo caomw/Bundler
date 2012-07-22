@@ -44,9 +44,9 @@
 
 /* Create a new image with the given width and height */
 img_t *img_new(int w, int h) {
-    img_t *img = malloc(sizeof(img_t));
+    img_t *img = (img_t*)malloc(sizeof(img_t));
     img->w = w; img->h = h;
-    img->pixels = calloc(sizeof(color_t), w * h);
+    img->pixels = (color_t*)calloc(sizeof(color_t), w * h);
     img->origin = v2_new(0.0, 0.0);
 
     /* All pixels start out as invalid */
@@ -57,9 +57,9 @@ img_t *img_new(int w, int h) {
 
 /* Create a new float image with the given width and height */
 fimg_t *fimg_new(int w, int h) {
-    fimg_t *img = malloc(sizeof(fimg_t));
+    fimg_t *img = (fimg_t*)malloc(sizeof(fimg_t));
     img->w = w; img->h = h;
-    img->pixels = calloc(sizeof(float), w * h);
+    img->pixels = (float*)calloc(sizeof(float), w * h);
     img->origin = v2_new(0.0, 0.0);
 
     /* All pixels start out as invalid */
@@ -282,7 +282,7 @@ img_t *bmp2img(bmp_t *bmp) {
 
 /* Convert from an image to grayscale bitmap */
 bmp_t *img2bmp_gray(img_t *img, int blue) {
-    bmp_t *bmp = malloc(sizeof(bmp_t));
+    bmp_t *bmp = (bmp_t*)malloc(sizeof(bmp_t));
     int w = img->w, h = img->h;
     int data_bytes = h * BYTE_PAD_WORD(w);
     int i;
@@ -321,7 +321,7 @@ bmp_t *img2bmp_gray(img_t *img, int blue) {
     bmp->info_header.colors_important = 0;
     
     /* Fill in the pixel data */
-    bmp->pixels = malloc(sizeof(color_t) * w * h);
+    bmp->pixels = (color_t*)malloc(sizeof(color_t) * w * h);
     memcpy(bmp->pixels, img->pixels, sizeof(color_t) * w * h);
 
     if (blue) {
@@ -339,7 +339,7 @@ bmp_t *img2bmp_gray(img_t *img, int blue) {
 
 /* Convert from an image to a bitmap */
 bmp_t *img2bmp(img_t *img) {
-    bmp_t *bmp = malloc(sizeof(bmp_t));
+    bmp_t *bmp = (bmp_t*)malloc(sizeof(bmp_t));
     int w = img->w, h = img->h;
     int data_bytes = h * BYTE_PAD_WORD(3 * w);
 
@@ -363,14 +363,14 @@ bmp_t *img2bmp(img_t *img) {
     bmp->palette.colors = NULL;
     
     /* Fill in the pixel data */
-    bmp->pixels = malloc(sizeof(color_t) * w * h);
+    bmp->pixels = (color_t*)malloc(sizeof(color_t) * w * h);
     memcpy(bmp->pixels, img->pixels, sizeof(color_t) * w * h);
 
     return bmp;
 }
 
 bmp_t *img2bmp32(img_t *img) {
-    bmp_t *bmp = malloc(sizeof(bmp_t));
+    bmp_t *bmp = (bmp_t*)malloc(sizeof(bmp_t));
     int w = img->w, h = img->h;
     int data_bytes = h * BYTE_PAD_WORD(4 * w);
 
@@ -394,7 +394,7 @@ bmp_t *img2bmp32(img_t *img) {
     bmp->palette.colors = NULL;
     
     /* Fill in the pixel data */
-    bmp->pixels = malloc(sizeof(color_t) * w * h);
+    bmp->pixels = (color_t*)malloc(sizeof(color_t) * w * h);
     memcpy(bmp->pixels, img->pixels, sizeof(color_t) * w * h);
 
     return bmp;
@@ -572,7 +572,7 @@ img_t *img_merge(img_t *i1, img_t *i2) {
 img_t *img_fuse(int num, int blend, ...) {
     va_list ap;
 
-    img_t **img_list = malloc(sizeof(img_t *) * num);
+    img_t **img_list = (img_t**)malloc(sizeof(img_t *) * num);
     int i;
     img_t *img_out;
 
@@ -715,7 +715,7 @@ void img_write(FILE *f, img_t *img) {
 
 img_t *img_read(FILE *f) {
     char hdr[5];
-    img_t *img = malloc(sizeof(img_t));
+    img_t *img = (img_t*)malloc(sizeof(img_t));
     
     /* Read the file header */
     fread(hdr, 1, 4, f);
@@ -731,7 +731,7 @@ img_t *img_read(FILE *f) {
     read_short(&img->h, f);
     
     /* Read the pixel data */
-    img->pixels = malloc(sizeof(color_t) * img->w * img->h);
+    img->pixels = (color_t*)malloc(sizeof(color_t) * img->w * img->h);
     fread(img->pixels, sizeof(color_t), img->w * img->h, f);
 
     return img;    

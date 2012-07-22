@@ -20,18 +20,10 @@
 #ifndef __pgm_h__
 #define __pgm_h__
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* Read a PGM file */
 img_t *img_read_pgm_file(const char *filename);
 
 /* Read the dimensions of an image */
 int img_read_pgm_dimensions(char *filename, int *w, int *h);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* __pgm_h__ */

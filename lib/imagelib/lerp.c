@@ -33,7 +33,7 @@
 /* Apply the permutation p to the array x */
 static void permute(int n, int *x, int *p) {
     int i;
-    int *xnew = malloc(sizeof(int) * n);
+    int *xnew = (int*)malloc(sizeof(int) * n);
     
     for (i = 0; i < n; i++)
 	xnew[i] = x[p[i]];
@@ -62,11 +62,11 @@ static double eval(int n, double *f, int *coords) {
  * To see how this works, see 
  *    http://osl.iu.edu/~tveldhui/papers/MAScThesis/node33.html */
 double lerp(int n, double *xin, double *f) {
-    double *x = malloc(sizeof(double) * n);
-    double *xsort = malloc(sizeof(double) * n);
+    double *x = (double*)malloc(sizeof(double) * n);
+    double *xsort = (double*)malloc(sizeof(double) * n);
     double sum = 0.0;
-    int *p = malloc(sizeof(int) * n);
-    int *pinv = malloc(sizeof(int) * n);
+    int *p = (int*)malloc(sizeof(int) * n);
+    int *pinv = (int*)malloc(sizeof(int) * n);
     int *f1, *f2;
     int i, j;
     
@@ -92,8 +92,8 @@ double lerp(int n, double *xin, double *f) {
 
     sum = f[0];
 
-    f1 = malloc(sizeof(int) * n);
-    f2 = malloc(sizeof(int) * n);
+    f1 = (int*)malloc(sizeof(int) * n);
+    f2 = (int*)malloc(sizeof(int) * n);
 
     /* Interpolate! */
     for (i = 0; i < n; i++) {

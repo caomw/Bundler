@@ -504,7 +504,7 @@ void lmdif_driver(void *fcn, int m, int n, double *xvec, double tol) {
 //#ifdef WIN32
 //    LMDIF1(fcn, &m, &n, xvec, fvec, &tol, &info, iwa, wa, &lwa);
 //#else
-    lmdif1_(fcn, &m, &n, xvec, fvec, &tol, &info, iwa, wa, &lwa);
+    lmdif1_(fcn, &m, &n, xvec, fvec, &tol, &info, iwa, wa, &lwa, NULL);
 //#endif
 
 #if 0
@@ -541,7 +541,7 @@ void lmdif_driver(void *fcn, int m, int n, double *xvec, double tol) {
     free(wa);
 }
 
-void lmdif_driver2(void *fcn, int m, int n, double *xvec, double tol) {
+void lmdif_driver2(void *fcn, int m, int n, double *xvec, double tol, void* userData) {
     int info;
     double *fvec;
     double gtol = 0, epsfcn = 0;
@@ -579,7 +579,7 @@ void lmdif_driver2(void *fcn, int m, int n, double *xvec, double tol) {
 //#else
     lmdif_(fcn, &m, &n, xvec, fvec, &tol, &tol, &gtol, &maxfev, 
            &epsfcn, diag, &mode, &factor, &nprint, &info, &nfev, 
-           fjac, &ldfjac, ipvt, qtf, wa1, wa2, wa3, wa4);
+           fjac, &ldfjac, ipvt, qtf, wa1, wa2, wa3, wa4, userData);
 //#endif
 
 #if 1
@@ -667,7 +667,7 @@ void lmdif_driver3(void *fcn, int m, int n, double *xvec, double tol,
 //#else
     lmdif_(fcn, &m, &n, xvec, fvec, &tol, &tol, &gtol, &maxfev, 
            &epsfcn, diag, &mode, &factor, &nprint, &info, &nfev, 
-           fjac, &ldfjac, ipvt, qtf, wa1, wa2, wa3, wa4);
+           fjac, &ldfjac, ipvt, qtf, wa1, wa2, wa3, wa4, NULL);
 //#endif
 
 #if 1

@@ -61,7 +61,7 @@ void lmdif_ ( void (*fcn)(const int *m, const int *n, const double *x, double *f
 	      double *diag, const int *mode, const double *factor, const int *nprint,
 	      int *info, int *nfev, double *fjac, const int *ldfjac, int *ipvt,
 	      double *qtf, double *wa1, double *wa2, double *wa3,
-	      double *wa4 );
+	      double *wa4, void* userData);
 
 /* minimize the sum of the squares of nonlinear functions in N
    variables by a modification of the Levenberg-Marquardt algorithm
@@ -118,7 +118,7 @@ double enorm_ ( const int *n, const double *x );
 void fdjac2_(void (*fcn)(const int *m, const int *n, const double *x, double *fvec,
 			 int *iflag ),
 	     const int *m, const int *n, double *x, const double *fvec, double *fjac,
-	     const int *ldfjac, int *iflag, const double *epsfcn, double *wa);
+	     const int *ldfjac, int *iflag, const double *epsfcn, double *wa, void* userData);
 
 /* compute a forward-difference approximation to the n by n jacobian
    matrix associated with a specified problem of n functions in n

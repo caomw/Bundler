@@ -252,7 +252,7 @@ double kth_element(int n, int k, double *arr) {
 
 /* Permute the array `arr' given permutation `perm' */
 void permute_dbl(int n, double *arr, int *perm) {
-    double *tmparr = malloc(sizeof(double) * n);
+    double *tmparr = (double*)malloc(sizeof(double) * n);
     int i;
 
     for (i = 0; i < n; i++) 

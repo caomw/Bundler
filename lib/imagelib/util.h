@@ -20,10 +20,6 @@
 #ifndef __util_h__
 #define __util_h__
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* Returns the floor of the log (base 2) of the given number */
 int ilog2(int n);
 
@@ -44,9 +40,5 @@ int least_larger_power_of_two(int n);
 
 /* Return the closest integer to x, rounding up */
 int iround(double x);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* __util_h__ */

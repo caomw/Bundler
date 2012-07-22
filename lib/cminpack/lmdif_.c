@@ -5,6 +5,8 @@
 
 #include <math.h>
 #include "minpack.h"
+#include "fmatrix.h"
+
 #define min(a,b) ((a) <= (b) ? (a) : (b))
 #define max(a,b) ((a) >= (b) ? (a) : (b))
 #define TRUE_ (1)
@@ -17,7 +19,7 @@
 	mode, const double *factor, const int *nprint, int *info, int *
 	nfev, double *fjac, const int *ldfjac, int *ipvt, double *
 	qtf, double *wa1, double *wa2, double *wa3, double *
-	wa4)
+	wa4, void* userData)
 {
     /* Table of constant values */
 
@@ -273,7 +275,15 @@ L20:
 /*     and calculate its norm. */
 
     iflag = 1;
+	
+	if (userData)
+	{
+		fmatrix_residuals2* fres = (fmatrix_residuals2*)userData;
+		(*fres)(m, n, &x[1], &fvec[1], &iflag); //HENRI
+	}
+	else
     (*fcn)(m, n, &x[1], &fvec[1], &iflag);
+
     *nfev = 1;
     if (iflag < 0) {
 	goto L300;
@@ -292,8 +302,7 @@ L30:
 /*        calculate the jacobian matrix. */
 
     iflag = 2;
-    fdjac2_(fcn, m, n, &x[1], &fvec[1], &fjac[fjac_offset], ldfjac, &
-	    iflag, epsfcn, &wa4[1]);
+    fdjac2_(fcn, m, n, &x[1], &fvec[1], &fjac[fjac_offset], ldfjac, &iflag, epsfcn, &wa4[1], userData);
     *nfev += *n;
     if (iflag < 0) {
 	goto L300;
@@ -306,6 +315,12 @@ L30:
     }
     iflag = 0;
     if ((iter - 1) % *nprint == 0) {
+		if (userData)
+		{
+			fmatrix_residuals2* fres = (fmatrix_residuals2*)userData;
+			(*fres)(m, n, &x[1], &fvec[1], &iflag);
+		}
+		else
 	(*fcn)(m, n, &x[1], &fvec[1], &iflag);
     }
     if (iflag < 0) {
@@ -315,8 +330,7 @@ L40:
 
 /*        compute the qr factorization of the jacobian. */
 
-    qrfac_(m, n, &fjac[fjac_offset], ldfjac, &c_true, &ipvt[1], n, &wa1[1], &
-	    wa2[1], &wa3[1]);
+    qrfac_(m, n, &fjac[fjac_offset], ldfjac, &c_true, &ipvt[1], n, &wa1[1], &wa2[1], &wa3[1]);
 
 /*        on the first iteration and if mode is 1, scale according */
 /*        to the norms of the columns of the initial jacobian. */
@@ -462,6 +476,12 @@ L200:
 /*           evaluate the function at x + p and calculate its norm. */
 
     iflag = 1;
+	if (userData)
+	{
+		fmatrix_residuals2* fres = (fmatrix_residuals2*)userData;
+		(*fres)(m, n, &wa2[1], &wa4[1], &iflag);
+	}
+	else
     (*fcn)(m, n, &wa2[1], &wa4[1], &iflag);
     ++(*nfev);
     if (iflag < 0) {
@@ -618,6 +638,12 @@ L300:
     }
     iflag = 0;
     if (*nprint > 0) {
+		if (userData)
+		{
+			fmatrix_residuals2* fres = (fmatrix_residuals2*)userData;
+			(*fres)(m, n, &x[1], &fvec[1], &iflag);
+		}
+		else
 	(*fcn)(m, n, &x[1], &fvec[1], &iflag);
     }
     return;

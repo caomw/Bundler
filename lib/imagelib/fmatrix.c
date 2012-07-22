@@ -29,7 +29,9 @@
 #include "fmatrix.h"
 #include "image.h"
 #include "matrix.h"
-#include "poly.h"
+//extern "C" {
+	#include "poly.h"
+//}
 #include "qsort.h"
 #include "resample.h"
 #include "svd.h"
@@ -317,8 +319,8 @@ int estimate_fmatrix_ransac_matches(int num_pts, v3_t *a_pts, v3_t *b_pts,
 	return 0;
     }
 
-    a_matrix = malloc(sizeof(double) * 3 * num_pts);
-    b_matrix = malloc(sizeof(double) * 3 * num_pts);
+    a_matrix = (double*)malloc(sizeof(double) * 3 * num_pts);
+    b_matrix = (double*)malloc(sizeof(double) * 3 * num_pts);
 
     for (i = 0; i < num_pts; i++) {
         a_matrix[i] = Vx(a_pts[i]);
@@ -485,7 +487,7 @@ int double_compare(const void *a, const void *b) {
     else
 	return 1;
 }
-
+/*
 static v3_t *global_ins = NULL;
 static v3_t *global_outs = NULL;
 static int global_num_matches = 0;
@@ -520,6 +522,7 @@ void fmatrix_residuals(int *m, int *n, double *x, double *fvec, int *iflag) {
     }
 #endif
 }
+*/
 
 #if 0
 /* Refine an F-matrix estimate using LM */
@@ -640,22 +643,16 @@ void refine_fmatrix_nonlinear_matches(int num_pts, v3_t *r_pts, v3_t *l_pts,
     double Ftmp[9];
     double U[9], VT[9];
 
-    global_ins = l_pts;
-    global_outs = r_pts;
-    global_num_matches = num_pts;
-    global_scale = F0[8];
+	fmatrix_residuals2 fres(l_pts, r_pts, num_pts, F0[8]);
     
     memcpy(Ftmp, F0, sizeof(double) * 9);
 
-    lmdif_driver2(fmatrix_residuals, num_pts, 8, Ftmp, 1.0e-12);
+    lmdif_driver2(&fres, num_pts, 8, Ftmp, 1.0e-12, &fres);
 
-    Ftmp[8] = global_scale;
+	//Ftmp[8] = fres.global_scale;
     matrix_print(3, 3, Ftmp);
     closest_rank2_matrix(Ftmp, Fout, U, VT);
     matrix_print(3, 3, Fout);
-
-    global_ins = global_outs = NULL;
-    global_num_matches = 0;    
 }
 
 int svd3_driver(double *A, double *U, double *S, double *VT) 

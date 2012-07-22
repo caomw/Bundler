@@ -27,6 +27,8 @@ extern "C" {
 // #include "dmap.h"
 #include "image.h"
 #include "vector.h"
+#include <stdio.h>
+#include <memory.h>
 
 /* Compute the epipoles of an F-matrix */
 void fmatrix_compute_epipoles(double *F, double *e1, double *e2);
@@ -78,6 +80,47 @@ void refine_fmatrix_nonlinear_matches(int num_pts, v3_t *r_pts, v3_t *l_pts,
 
 /* Compute an F-matrix from two sets of camera parameters */
 void fmatrix_from_parameters(double *i0, double *R0, double *t0, double *i1, double *R1, double *t1, double *F);
+
+struct fmatrix_residuals2
+{
+	fmatrix_residuals2(v3_t* ins, v3_t* outs, int numMatches, double scale)
+	{
+		global_ins         = ins;
+		global_outs        = outs;
+		global_num_matches = numMatches;
+		global_scale       = scale;
+	}
+
+	void operator() (const int *m, const int *n, double *x, double *fvec, int *iflag) 
+	{
+		int i;
+		double sum = 0.0;
+
+		double F[9], F2[9], U[9], VT[9];
+		memcpy(F, x, sizeof(double) * 8);
+		F[8] = global_scale;
+
+		closest_rank2_matrix(F, F2, U, VT);
+		
+		if (global_num_matches != (*m)) 
+		{
+			printf("Error: number of matches don't match!\n");
+		}		
+
+		for (i = 0; i < *m; i++) 
+		{
+			fvec[i] = sqrt(fmatrix_compute_residual(F2, global_outs[i], global_ins[i]));
+			if (*iflag == 0) 
+			{
+				sum += fvec[i];
+			}
+		}
+	}
+	v3_t*  global_ins;
+	v3_t*  global_outs;
+	int    global_num_matches;
+	double global_scale;
+};
 
 #ifdef __cplusplus
 }

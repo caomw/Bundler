@@ -36,8 +36,8 @@ void align_affine(int num_pts, v3_t *r_pts, v3_t *l_pts, double *Tout) {
     int n = 6;           /* Columns of A */
     int nrhs = 1;        /* Columns of X */
 
-    double *A = malloc(sizeof(double) * m * n);    /* Left-hand matrix */
-    double *B = malloc(sizeof(double) * m * nrhs); /* Right-hand matrix */
+    double *A = (double *)malloc(sizeof(double) * m * n);    /* Left-hand matrix */
+    double *B = (double *)malloc(sizeof(double) * m * nrhs); /* Right-hand matrix */
     // double *X = malloc(sizeof(double) * n * nrhs);
     double xVec[6];
 
@@ -94,8 +94,8 @@ void align_affine_3D(int num_pts, v3_t *r_pts, v3_t *l_pts, double *Tout) {
 	int n = 12;           /* Columns of A */
 	int nrhs = 1;        /* Columns of X */
 
-	double *A = malloc(sizeof(double) * m * n);    /* Left-hand matrix */
-	double *B = malloc(sizeof(double) * m * nrhs); /* Right-hand matrix */
+	double *A = (double*)malloc(sizeof(double) * m * n);    /* Left-hand matrix */
+	double *B = (double*)malloc(sizeof(double) * m * nrhs); /* Right-hand matrix */
 	// double *X = malloc(sizeof(double) * n * nrhs);
 
 	int i, base;

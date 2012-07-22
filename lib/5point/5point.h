@@ -20,10 +20,6 @@
 #ifndef __5POINT_H__
 #define __5POINT_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "vector.h"
 
 int compute_pose_ransac(int n, v2_t *r_pts, v2_t *l_pts, 
@@ -31,8 +27,5 @@ int compute_pose_ransac(int n, v2_t *r_pts, v2_t *l_pts,
                         double ransac_threshold, int ransac_rounds, 
                         double *R_out, double *t_out);
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* __5POINT_H__ */
