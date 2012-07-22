@@ -606,54 +606,15 @@ double BundlerApp::RunSFM(int num_pts, int num_cameras, int start_camera,
         bool fixed_focal = m_fixed_focal_length;
         clock_t start = clock();
 
-		if (m_ba_type == BA_SBA)
-		{
-			run_sfm(nz_count, num_cameras, start_camera, vmask, projections, 
-				fixed_focal ? 0 : 1, 0,
-				m_estimate_distortion ? 1 : 0, 1,
-				init_camera_params, nz_pts, 
-				(m_use_constraints || m_constrain_focal) ? 1 : 0,
-				(m_use_point_constraints) ? 1 : 0,
-				m_point_constraints, m_point_constraint_weight,
-				fix_points ? 1 : 0, m_optimize_for_fisheye, eps2, V, S, U, W);
-		}
-		else if (m_ba_type == BA_PBA_CPU_DOUBLE)
-		{
-			run_sfm_pba(nz_count, num_cameras, start_camera, vmask, projections, 
-				fixed_focal ? 0 : 1, 0,
-				m_estimate_distortion ? 1 : 0, 1,
-				init_camera_params, nz_pts, 
-				(m_use_constraints || m_constrain_focal) ? 1 : 0,
-				(m_use_point_constraints) ? 1 : 0,
-				m_point_constraints, m_point_constraint_weight,
-				fix_points ? 1 : 0, m_optimize_for_fisheye, eps2, V, S, U, W, 150, ParallelBA::PBA_CPU_DOUBLE);
-		}
-		else if (m_ba_type == BA_PBA_CPU_FLOAT)
-		{
-			run_sfm_pba(nz_count, num_cameras, start_camera, vmask, projections, 
-				fixed_focal ? 0 : 1, 0,
-				m_estimate_distortion ? 1 : 0, 1,
-				init_camera_params, nz_pts, 
-				(m_use_constraints || m_constrain_focal) ? 1 : 0,
-				(m_use_point_constraints) ? 1 : 0,
-				m_point_constraints, m_point_constraint_weight,
-				fix_points ? 1 : 0, m_optimize_for_fisheye, eps2, V, S, U, W, 150, ParallelBA::PBA_CPU_FLOAT);
-		}
-		else if (m_ba_type == BA_PBA_GPU_FLOAT)
-		{
-			run_sfm_pba(nz_count, num_cameras, start_camera, vmask, projections, 
-				fixed_focal ? 0 : 1, 0,
-				m_estimate_distortion ? 1 : 0, 1,
-				init_camera_params, nz_pts, 
-				(m_use_constraints || m_constrain_focal) ? 1 : 0,
-				(m_use_point_constraints) ? 1 : 0,
-				m_point_constraints, m_point_constraint_weight,
-				fix_points ? 1 : 0, m_optimize_for_fisheye, eps2, V, S, U, W, 150, ParallelBA::PBA_CUDA_DEVICE_DEFAULT);
-		}
-		else if (m_ba_type == BA_CERES)
-		{
-
-		}
+        run_sfm_pba(nz_count, num_cameras, start_camera,
+		    vmask, projections, 
+            fixed_focal ? 0 : 1, 0,
+            m_estimate_distortion ? 1 : 0, 1,
+            init_camera_params, nz_pts, 
+            (m_use_constraints || m_constrain_focal) ? 1 : 0,
+            (m_use_point_constraints) ? 1 : 0,
+            m_point_constraints, m_point_constraint_weight,
+            fix_points ? 1 : 0, m_optimize_for_fisheye, eps2, V, S, U, W);
 
         clock_t end = clock();
 

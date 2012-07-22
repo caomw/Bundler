@@ -25,7 +25,7 @@
 #include <assert.h>
 #include <float.h>
 #include <math.h>
-#include <string>
+#include <string.h>
 #include <time.h>
 
 #ifdef WIN32
@@ -831,11 +831,6 @@ bool BundlerApp::OnInit()
     printf("[BundlerApp::OnInit] Processing options...\n");
     ProcessOptions(argc - 1, argv + 1);
 
-	if (m_constrain_focal && (m_ba_type == BA_PBA_CPU_DOUBLE || m_ba_type == BA_PBA_CPU_FLOAT || m_ba_type == BA_PBA_GPU_FLOAT)) {
-        printf("Error: --constrain_focal is not supported by PBA.\n");
-        exit(1);
-	}
-
     if (m_use_intrinsics && m_estimate_distortion) {
         printf("Error: --intrinsics and --estimate_distortion "
                "are incompatible\n");
@@ -1142,62 +1137,13 @@ BundlerApp &wxGetApp() {
     return *bundler_app;
 }
 
-int main(int argc, char* argv[]) 
+int main(int argc, char **argv) 
 {
     // mtrace();
-
-	bool parallelEpipolar = false;
-	BundleAdjustmentType bundleAdjustmentType = BA_SBA;
-	for (unsigned int i=0; i<argc; ++i)
-	{
-		if (std::string(argv[i]) == "--ba" && i != argc-1)
-		{
-			std::string baType(argv[i+1]);
-			if (baType == "none")
-				bundleAdjustmentType = BA_NONE;
-			else if (baType == "pba_cpu_double")
-				bundleAdjustmentType = BA_PBA_CPU_DOUBLE;
-			else if (baType == "pba_cpu_float")
-				bundleAdjustmentType = BA_PBA_CPU_FLOAT;
-			else if (baType == "pba_gpu_float")
-				bundleAdjustmentType = BA_PBA_GPU_FLOAT;
-			else if (baType == "ceres")
-				bundleAdjustmentType = BA_CERES;
-			else //if (baType == "sba")
-				bundleAdjustmentType = BA_SBA;
-		}
-		else if (std::string(argv[i]) == "--parallel_epipolar")
-		{
-			parallelEpipolar = true;
-		}
-	}
-
-	if (parallelEpipolar)
-		std::cout << "Parallel epipolar computation enabled" << std::endl;
-	
-	if (bundleAdjustmentType != BA_SBA)
-	{
-		std::cout << "Bundle adjustment selected: ";
-		if (bundleAdjustmentType == BA_NONE)
-			std::cout << "none";
-		else if (bundleAdjustmentType == BA_PBA_CPU_DOUBLE)
-			std::cout << "PBA CPU double";
-		else if (bundleAdjustmentType == BA_PBA_CPU_FLOAT)
-			std::cout << "PBA CPU float";
-		else if (bundleAdjustmentType == BA_PBA_GPU_FLOAT)
-			std::cout << "PBA GPU float";
-		else if (bundleAdjustmentType == BA_CERES)
-			std::cout << "none (ceres is not integrated yet)";
-		std::cout << std::endl;
-	}
-
-	//std::cerr << "parallel epipolar: " << std::boolalpha << parallelEpipolar << std::noboolalpha << std::endl;
-	//std::cerr << "bundle adjustment: " << bundleAdjustmentType << std::endl;
 
     bundler_app = new BundlerApp();
     bundler_app->argc = argc;
     bundler_app->argv = argv;
-	bundler_app->m_parallel_epipolar = parallelEpipolar;
-	bundler_app->m_ba_type = bundleAdjustmentType;
+
     bundler_app->OnInit();
 }
